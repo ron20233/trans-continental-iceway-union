@@ -500,7 +500,7 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 (() => {
 'use strict';
 
-const DEFAULT_MAP = 'map.pdf';
+const DEFAULT_MAPS = ['pdf.pdf','map/pdf.pdf','map.pdf'];
 const G_KEY   = 'AQ.Ab8RN6ITYNu4eMS7TIrog3_vBsGz-4YeeyrRXSL6FoEhRsldhg';
 const G_MODEL = 'gemini-2.5-flash';
 const SALT = 'b5509e47c370bc0c82fedc319cfe342a';
@@ -829,7 +829,7 @@ async function loadMap(){
   show('loader',true);show('empty',false);
   try{
     let data=await idbGet();
-    if(!data){const r=await fetch(DEFAULT_MAP);if(!r.ok)throw 0;data=await r.arrayBuffer();}
+    if(!data){for(const u of DEFAULT_MAPS){try{const r=await fetch(u);if(r.ok){const b=await r.arrayBuffer();if(b.byteLength>1024&&new Uint8Array(b.slice(0,4)).join()==='37,80,68,70'){data=b;break;}}}catch(e){}}if(!data)throw 0;}
     await openPdf(data);
   }catch(e){show('empty',true);}
   show('loader',false);
