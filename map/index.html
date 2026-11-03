@@ -1,8 +1,13 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#090b0f">
 <title>Transit Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#090b0f; --glass:rgba(16,19,26,.74); --glass-b:rgba(255,255,255,.09);
@@ -14,12 +19,12 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0;background:var(--bg);color:var(--text);
-  font-family:"Segoe UI Variable","Segoe UI",Inter,system-ui,-apple-system,Roboto,sans-serif;overflow:hidden}
+  font-family:Inter,"Segoe UI Variable","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;overflow:hidden}
+h1,h2,h3,.ptitle,.thead{font-family:"Space Grotesk",Inter,"Segoe UI",system-ui,sans-serif;letter-spacing:-.01em}
 button{font:inherit;color:inherit}
 .glass{background:var(--glass);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);
   border:1px solid var(--glass-b);box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.07)}
 
-/* ---------- Fluent reveal ---------- */
 .reveal{position:relative}
 .reveal::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .25s;
   background:radial-gradient(170px circle at var(--mx,-999px) var(--my,-999px),rgba(255,255,255,.14),transparent 70%)}
@@ -29,13 +34,11 @@ button{font:inherit;color:inherit}
   mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .reveal:hover::before,.reveal:hover::after{opacity:1}
 
-/* ---------- PS5-style focus ---------- */
 .fx{transition:transform .35s var(--spring),box-shadow .35s,background .25s,opacity .25s;outline:none}
 .fx:hover{transform:scale(1.04)}
 .fx:active{transform:scale(.96)}
 .fx:focus-visible{transform:scale(1.06);box-shadow:0 0 0 2px #fff,0 0 0 6px rgba(255,255,255,.14),0 0 34px rgba(25,167,255,.55)}
 
-/* ---------- Map ---------- */
 #view{position:fixed;inset:0;touch-action:none;cursor:grab;overflow:hidden;
   background:radial-gradient(1200px 700px at 50% 0%,#141a26,#090b0f)}
 #view.drag{cursor:grabbing}
@@ -63,7 +66,7 @@ body.picking #view{cursor:crosshair}
 .badge .dot{position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
   font-weight:800;font-size:15px;color:#fff;background:var(--g);box-shadow:0 6px 18px rgba(0,0,0,.5),0 0 22px var(--gc)}
 .badge::after{content:"";position:absolute;left:11px;top:24px;width:10px;height:10px;background:var(--g);transform:rotate(45deg)}
-.lbl{left:22px;top:-44px;white-space:nowrap;background:rgba(10,12,17,.9);border:1px solid rgba(255,255,255,.16);
+.lbl{left:22px;top:-44px;white-space:nowrap;max-width:min(240px,62vw);overflow:hidden;text-overflow:ellipsis;background:rgba(10,12,17,.9);border:1px solid rgba(255,255,255,.16);
   padding:5px 11px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .lbl.t{left:14px;top:-26px;font-weight:500;font-size:12px;padding:3px 9px}
 .ping .an{width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;border:3px solid var(--c);animation:ring 1.1s ease-out forwards}
@@ -84,7 +87,6 @@ body.picking #view{cursor:crosshair}
 .rsvg .walk .case,.rsvg .walk .g1,.rsvg .walk .g2,.rsvg .walk .g3{display:none}
 .rsvg .trail{stroke:#fff;stroke-width:calc(5px*var(--inv,1));opacity:.9}
 
-/* ---------- Search bar ---------- */
 .top{position:fixed;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 0;
   display:flex;justify-content:center;pointer-events:none;z-index:5;transition:opacity .4s var(--ease),transform .5s var(--ease)}
 body.journey .top{opacity:0;transform:translateY(-24px)}
@@ -114,7 +116,6 @@ body.journey .search{pointer-events:none!important}
 .note{padding:12px 16px;color:var(--muted);font-size:14px}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 
-/* ---------- Controls ---------- */
 .ctrl{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:5;display:flex;flex-direction:column;gap:8px}
 .ctrl button{width:46px;height:46px;border-radius:14px;cursor:pointer;display:grid;place-items:center;font-size:21px;padding:0}
 #helpBtn{font-weight:800;font-size:19px;color:var(--accent)}
@@ -134,7 +135,6 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 .loader{position:fixed;inset:0;display:none;place-items:center;z-index:2;color:var(--muted);font-size:14px}
 .loader.show{display:grid}
 
-/* ---------- Journey panel ---------- */
 .panel{position:fixed;z-index:8;left:16px;top:16px;bottom:16px;width:392px;border-radius:24px;display:flex;flex-direction:column;
   opacity:0;transform:translateX(-30px) scale(.96);filter:blur(10px);pointer-events:none;
   transition:opacity .5s var(--ease),transform .6s var(--spring),filter .5s var(--ease)}
@@ -168,17 +168,22 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 @keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 .field input{flex:1;min-width:0;height:100%;background:transparent;border:0;outline:0;color:var(--text);font:inherit;font-size:15px;padding:0 6px 0 14px}
 .field input::placeholder{color:var(--muted)}
+.clr{display:none;flex:none;width:26px;height:26px;margin-right:2px;border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.12);color:var(--muted);cursor:pointer;place-items:center;font-size:17px;line-height:1}
+.clr:hover{color:#fff;background:rgba(255,255,255,.2)}
+.field.has .clr{display:grid}
 .pick{width:36px;height:36px;margin-right:6px;border-radius:10px;border:0;background:transparent;cursor:pointer;display:grid;place-items:center;color:var(--muted);padding:0}
 .pick:hover,.field.picking .pick{color:#a4f20f}
 .swap{align-self:center;flex:none}
 .swap.spin1 svg{animation:flip .55s var(--spring)}
 @keyframes flip{from{transform:rotate(0)}to{transform:rotate(180deg)}}
-.sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;border-radius:14px;overflow:hidden;display:none;
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;border-radius:14px;overflow-x:hidden;overflow-y:auto;max-height:min(300px,38dvh);overscroll-behavior:contain;scrollbar-width:thin;display:none;
   background:rgba(20,24,32,.97);border:1px solid var(--glass-b);box-shadow:var(--shadow)}
 .sugg.show{display:block;animation:rise .25s var(--ease) both}
 .sg{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;font-size:14.5px}
 .sg:hover,.sg.on{background:rgba(255,255,255,.09)}
 .sg span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg span mark{background:none;color:var(--accent);font-weight:700}
+.sg em{flex:none}
 .sg em{display:flex;gap:3px}
 .sg em u{width:8px;height:8px;border-radius:50%;display:block}
 .cta{position:relative;overflow:hidden;margin:12px 18px 6px;height:50px;border:0;border-radius:14px;background:var(--xg);color:#06210a;
@@ -189,7 +194,7 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 @keyframes sheen{0%,60%{left:-80%}100%{left:140%}}
 .cta.busy{pointer-events:none;filter:saturate(.7)}
 .cta.busy span{opacity:.7}
-.pbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:10px 18px 20px;scrollbar-width:thin;scrollbar-color:#fff3 transparent}
+.pbody{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:10px 18px 20px;scrollbar-width:thin;scrollbar-color:#fff3 transparent}
 .hint{color:var(--muted);font-size:14px;line-height:1.5;animation:rise .5s var(--ease) both}
 .chips{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .chipb{padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid var(--line);font-size:13px;color:var(--text)}
@@ -201,6 +206,9 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 .orbit i:nth-child(2){animation-delay:.14s}.orbit i:nth-child(3){animation-delay:.28s}.orbit i:nth-child(4){animation-delay:.42s}.orbit i:nth-child(5){animation-delay:.56s}
 @keyframes orb{0%{transform:rotate(0);opacity:1}70%{transform:rotate(300deg);opacity:1}100%{transform:rotate(360deg);opacity:0}}
 .errm{color:#ff8c8c}
+.rsum{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;margin:0 0 12px;font-size:14px;color:var(--muted);animation:rise .5s var(--ease) both}
+.rsum b{min-width:0;max-width:100%;color:var(--text);font-weight:650;overflow-wrap:anywhere}
+.rsum i{font-style:normal;color:var(--accent)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat{border-radius:16px;padding:12px 8px;text-align:center;background:rgba(255,255,255,.07);border:1px solid var(--line);animation:rise .6s var(--ease) both}
 .stat:nth-child(2){animation-delay:.08s}.stat:nth-child(3){animation-delay:.16s}
@@ -219,24 +227,23 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
   animation-delay:calc(var(--i,0)*70ms + 400ms);box-shadow:0 0 12px var(--c);min-height:18px}
 .row .rl .ln.walk{background:repeating-linear-gradient(#fff 0 3px,transparent 3px 8px);box-shadow:none;width:3px}
 @keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
-.row .rc{flex:1;min-width:0;padding-bottom:12px}
-.rc .nm{font-weight:650;font-size:15px;cursor:pointer;display:inline-block;border-radius:6px}
+.row .rc{flex:1;min-width:0;padding-bottom:12px;overflow-wrap:anywhere}
+.rc .nm{font-weight:650;font-size:15px;cursor:pointer;display:inline-block;max-width:100%;border-radius:6px;overflow-wrap:anywhere;line-height:1.3}
 .rc .nm:hover{color:#fff;text-shadow:0 0 14px rgba(255,255,255,.6)}
 .rc small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
-.lchip{display:inline-flex;align-items:center;gap:8px;margin:2px 0 6px;padding:4px 12px;border-radius:999px;font-weight:800;font-size:13px;background:var(--c);
+.lchip{max-width:100%;flex-wrap:wrap;row-gap:0;display:inline-flex;align-items:center;gap:8px;margin:2px 0 6px;padding:4px 12px;border-radius:999px;font-weight:800;font-size:13px;background:var(--c);
   box-shadow:0 0 20px -2px var(--c)}
 .lchip i{font-style:normal;font-weight:500;opacity:.85}
 .more{background:none;border:0;color:var(--accent);cursor:pointer;font-size:13px;padding:2px 0;margin:2px 0 4px}
 .mid{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s var(--ease)}
 .mid.open{grid-template-rows:1fr}
 .mid ul{overflow:hidden;margin:0;padding:0;list-style:none}
-.mid li{padding:5px 0 5px 12px;font-size:13.5px;color:#cdd3de;border-left:2px solid var(--c);cursor:pointer;margin-left:2px;transition:color .3s,background .3s}
+.mid li{overflow-wrap:anywhere;padding:5px 0 5px 12px;font-size:13.5px;color:#cdd3de;border-left:2px solid var(--c);cursor:pointer;margin-left:2px;transition:color .3s,background .3s}
 .mid li:hover{color:#fff}
 .row.pass .nm,.mid li.pass{color:#fff}
 .mid li.act,.row.act .nm{color:#fff;text-shadow:0 0 14px var(--accent)}
 .mid li.act{background:linear-gradient(90deg,rgba(25,167,255,.22),transparent)}
 
-/* ---------- Toast (achievement) ---------- */
 .toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 16px);z-index:30;display:flex;align-items:center;gap:14px;max-width:calc(100vw - 24px);
   padding:10px 22px 10px 10px;border-radius:999px;transform:translate(-50%,-160%);opacity:0;pointer-events:none;overflow:hidden;
   background:rgba(14,17,23,.92);border:1px solid rgba(255,255,255,.14);box-shadow:0 18px 50px rgba(0,0,0,.6),0 0 40px rgba(164,242,15,.18);
@@ -249,7 +256,6 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 .toast b{display:block;font-size:14px}
 .toast small{color:var(--muted);font-size:12.5px}
 
-/* ---------- Modal ---------- */
 .modal{position:fixed;inset:0;z-index:40;display:none;place-items:center;padding:20px;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .modal.show{display:grid}
 .card{width:min(360px,100%);border-radius:20px;padding:22px;animation:rise .4s var(--ease) both}
@@ -261,7 +267,6 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 .row2 button{flex:1;height:44px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);font-size:15px;font-weight:600;cursor:pointer}
 .row2 button.p{background:var(--ps);border-color:transparent;color:#fff}
 
-/* ---------- Tutorial ---------- */
 @property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
 .tuto{position:fixed;inset:0;z-index:60;display:none;touch-action:none;overflow:hidden}
 .tuto.show{display:block;animation:fadein .5s var(--ease) both}
@@ -343,7 +348,6 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
   animation:conf 1.5s cubic-bezier(.15,.8,.3,1) forwards}
 @keyframes conf{from{transform:translate(0,0) rotate(0);opacity:1}to{transform:translate(var(--dx),var(--dy)) rotate(var(--r));opacity:0}}
 
-/* ---------- Responsive ---------- */
 @media (max-width:899px){
   .panel{left:8px;right:8px;width:auto;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);max-height:68vh;max-height:68dvh;border-radius:24px;
     transform:translateY(40px) scale(.97)}
@@ -384,16 +388,16 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 </head>
 <body>
 
-<div id="view" class=""><div id="stage" style="transform: translate(29.07px, 196.501px) scale(0.13687); --inv: 7.3061801315384205;"><canvas width="8065" height="4033"></canvas></div></div>
+<div id="view"><div id="stage"></div></div>
 
 <div class="top">
   <div class="search" id="search">
     <div class="bar glass" id="bar">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="search" placeholder="Search a line or a stop" autocomplete="off" enterkeyhint="search" aria-label="Search a line or a stop">
       <div class="spin"></div>
       <button class="ib fx" id="routeBtn" aria-label="Plan a journey" title="Plan a journey">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a4f20f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"></circle><circle cx="18" cy="5" r="2.5"></circle><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"></path></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a4f20f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg>
       </button>
       <button class="go fx" id="go">Search</button>
     </div>
@@ -401,37 +405,39 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
   </div>
 </div>
 
-<section class="panel glass" id="panel" hidden="" aria-label="Journey planner">
+<section class="panel glass" id="panel" hidden aria-label="Journey planner">
   <div class="amb"></div>
   <button class="grab" id="grab" aria-label="Expand or collapse"></button>
   <div class="phead">
-    <div class="ptitle"><span class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#06210a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.2"></circle><circle cx="18" cy="5" r="2.2"></circle><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"></path></svg></span>Journey</div>
-    <button class="ib fx" id="pclose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+    <div class="ptitle"><span class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#06210a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="5" r="2.2"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5"/></svg></span>Journey</div>
+    <button class="ib fx" id="pclose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   </div>
   <div class="fields">
     <div class="rail"><i class="a"></i><span></span><i class="b"></i></div>
     <div class="inputs">
       <div class="field reveal" id="fA">
         <input id="inA" placeholder="From" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Departure">
-        <button class="pick fx" data-w="A" title="Pick on the map" aria-label="Pick departure on the map"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg></button>
+        <button class="clr" data-w="A" type="button" aria-label="Clear">×</button>
+        <button class="pick fx" data-w="A" title="Pick on the map" aria-label="Pick departure on the map"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
         <div class="sugg" id="sA"></div>
       </div>
       <div class="field reveal" id="fB">
         <input id="inB" placeholder="To" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Arrival">
-        <button class="pick fx" data-w="B" title="Pick on the map" aria-label="Pick arrival on the map"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"></circle><path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path></svg></button>
+        <button class="clr" data-w="B" type="button" aria-label="Clear">×</button>
+        <button class="pick fx" data-w="B" title="Pick on the map" aria-label="Pick arrival on the map"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
         <div class="sugg" id="sB"></div>
       </div>
     </div>
-    <button class="ib swap fx" id="swap" aria-label="Swap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"></path></svg></button>
+    <button class="ib swap fx" id="swap" aria-label="Swap"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 20l-3-3M7 20l3-3M17 20V4M17 4l-3 3M17 4l3 3"/></svg></button>
   </div>
   <button class="cta fx" id="goRoute"><span>Find route</span></button>
   <div class="pbody" id="pbody"></div>
 </section>
 
-<div class="toast" id="toast"><div class="ticon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06210a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></div><div><b id="tt"></b><small id="ts"></small></div></div>
+<div class="toast" id="toast"><div class="ticon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06210a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><div><b id="tt"></b><small id="ts"></small></div></div>
 
 <div class="pager glass" id="pager">
-  <button id="prev" aria-label="Previous page" disabled="">‹</button><span id="pg">1 / 1</span><button id="next" aria-label="Next page" disabled="">›</button>
+  <button id="prev" aria-label="Previous page">‹</button><span id="pg"></span><button id="next" aria-label="Next page">›</button>
 </div>
 
 <div class="ctrl">
@@ -439,7 +445,7 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
   <button class="glass fx" id="zin" aria-label="Zoom in">+</button>
   <button class="glass fx" id="zout" aria-label="Zoom out">−</button>
   <button class="glass fx" id="fit" aria-label="Fit to screen">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
   </button>
 </div>
 
@@ -450,16 +456,50 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 <div class="tuto" id="tuto" aria-live="polite">
   <div class="tspot none" id="tspot"></div>
   <div class="tcard glass" id="tcard" role="dialog" aria-label="Tutorial"></div>
-  <div class="gh" id="gh"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 3l14 7.5-6.2 1.9L10.5 19z" fill="#fff" stroke="#0b0e14" stroke-width="1.4" stroke-linejoin="round"></path></svg></div>
+  <div class="gh" id="gh"><svg width="30" height="30" viewBox="0 0 24 24"><path d="M5 3l14 7.5-6.2 1.9L10.5 19z" fill="#fff" stroke="#0b0e14" stroke-width="1.4" stroke-linejoin="round"/></svg></div>
 </div>
 <div id="sat" style="position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)"></div>
 
+<script>
+(function(){
+  var touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+  var blocked=false;
+  function stop(e){e.preventDefault();e.stopPropagation();return false;}
+  addEventListener('contextmenu',stop,true);
+  addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(),c=e.ctrlKey||e.metaKey;
+    if(e.key==='F12'||e.keyCode===123)return stop(e);
+    if(c&&e.shiftKey&&'ijckm'.indexOf(k)>-1)return stop(e);
+    if(c&&(k==='u'||k==='s'||k==='p'))return stop(e);
+    if(e.metaKey&&e.altKey&&'iujc'.indexOf(k)>-1)return stop(e);
+  },true);
+  function lock(){
+    if(blocked)return;blocked=true;
+    try{document.documentElement.innerHTML='<body style="margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:#090b0f;color:#8d97a9;font:16px system-ui,sans-serif;text-align:center">Developer tools detected.<br>Close them to continue.</body>';}catch(_){}
+  }
+  function open(){
+    var w=outerWidth-innerWidth>160,h=outerHeight-innerHeight>160;
+    return w||h;
+  }
+  if(!touch){
+    setInterval(function(){
+      if(open()){lock();return;}
+      var t=performance.now();
+      (function(){debugger;})();
+      if(performance.now()-t>100)lock();
+    },1000);
+    var el=new Image();
+    Object.defineProperty(el,'id',{get:function(){lock();}});
+    setInterval(function(){console.log(el);console.clear();},2000);
+  }
+  addEventListener('resize',function(){if(blocked&&!open())location.reload();});
+})();
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 (() => {
 'use strict';
 
-/* ================= Config ================= */
 const DEFAULT_MAP = 'map.pdf';
 const G_KEY   = 'AQ.Ab8RN6ITYNu4eMS7TIrog3_vBsGz-4YeeyrRXSL6FoEhRsldhg';
 const G_MODEL = 'gemini-2.5-flash';
@@ -475,8 +515,6 @@ const norm = t => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u03
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-/*GRAPH_START*/
-/* ================= Map analysis (stops + tracks) ================= */
 function mmul(m,n){return[m[0]*n[0]+m[1]*n[2],m[0]*n[1]+m[1]*n[3],m[2]*n[0]+m[3]*n[2],m[2]*n[1]+m[3]*n[3],m[4]*n[0]+m[5]*n[2]+n[4],m[4]*n[1]+m[5]*n[3]+n[5]];}
 function hexOf(a){
   if(!a||a.length===0) return null;
@@ -499,7 +537,6 @@ class MinHeap{
     return[rk,rv];}
 }
 
-/* ol: operator list, base: viewport transform, W/H: stage size, texts: [{str,minX,minY,maxX,maxY}] */
 function analyze(ol, base, W, H, texts){
   const OPS=pdfjsLib.OPS;
   const pStroke=new Set([OPS.stroke,OPS.closeStroke,OPS.fillStroke,OPS.eoFillStroke,OPS.closeFillStroke,OPS.closeEOFillStroke]);
@@ -574,7 +611,6 @@ function analyze(ol, base, W, H, texts){
     }
   }
 
-  /* ---- stops: dedupe dots ---- */
   shapes.sort((a,b)=>b.size-a.size);
   const CELL=64,sg=new Map(),stops0=[];
   for(const sh of shapes){
@@ -592,7 +628,6 @@ function analyze(ol, base, W, H, texts){
   const msz=sizes[sizes.length>>1];
   const stops1=stops0.filter(s=>s.size>=msz*0.3&&s.size<=msz*4);
 
-  /* ---- track geometry, one snapped vertex set per colour ---- */
   const colIdx=new Map(),V=[],E=[],snap=1.5,vh=new Map();
   function gv(ci,x,y){
     const gx=Math.floor(x/snap),gy=Math.floor(y/snap);
@@ -623,7 +658,6 @@ function analyze(ol, base, W, H, texts){
     for(let x=ax;x<=bx;x++)for(let y=ay;y<=by;y++){const k=x+','+y;let l=eg.get(k);if(!l){l=[];eg.set(k,l);}l.push(id);}
   }
 
-  /* ---- project every stop on every colour, keep colours that serve >= 2 stops ---- */
   const colStops=new Map();
   for(const s of stops1){
     const tol=s.size*0.8+2.5,best=new Map(),seen=new Set();
@@ -642,7 +676,6 @@ function analyze(ol, base, W, H, texts){
   const qual=new Set();for(const [c,z] of colStops) if(z.size>=2) qual.add(c);
   if(!qual.size) return {error:'no-lines'};
 
-  /* ---- attach stops to the geometry (split edges where needed) ---- */
   for(const s of stops1){
     s.v=[];s.cols=new Set();
     for(const [c,b] of s.best){
@@ -669,13 +702,11 @@ function analyze(ol, base, W, H, texts){
   if(stops.length<2) return {error:'no-stops'};
   stops.forEach((s,i)=>{s.idx=i;for(const v of s.v)V[v].stop=i;});
 
-  /* ---- colours, names ---- */
   const qIdx=new Map(),colors=[];
   for(const [hex,ci] of colIdx){if(qual.has(ci)){colors.push({hex,name:null});qIdx.set(ci,colors.length);}}
   const K=colors.length;
   for(const s of stops){s.colors=[...s.cols].map(c=>qIdx.get(c)).filter(Boolean);delete s.best;}
 
-  /* stop names: nearest label box */
   const cand=[];
   for(const t of texts){ if(t.str.length<3||!/\p{L}/u.test(t.str)) continue; cand.push(t); }
   const maxD=msz*6+14,pairs=[];
@@ -691,7 +722,6 @@ function analyze(ol, base, W, H, texts){
   for(const [d,si,j] of pairs){if(named.has(si)||usedT.has(j))continue;stops[si].name=cand[j].str;named.add(si);usedT.add(j);}
   let un=0;for(const s of stops) if(!s.name) s.name='Stop '+(++un);
 
-  /* line names: short labels sitting close to a colour's geometry */
   const vg=new Map();
   const vsamp=[];
   const addSamp=(x,y,c)=>{const k=Math.floor(x/48)+','+Math.floor(y/48);let l=vg.get(k);if(!l){l=[];vg.set(k,l);}l.push(vsamp.length);vsamp.push({x,y,c});};
@@ -716,7 +746,6 @@ function analyze(ol, base, W, H, texts){
     c.name=best||('Line '+(i+1));
   });
 
-  /* ---- adjacency ---- */
   const adj=Array.from({length:V.length},()=>[]);
   for(const e of E){
     if(e.dead)continue;const c=qIdx.get(e.c);if(!c)continue;
@@ -756,7 +785,7 @@ function computeRoute(g,src,dst){
   if(found<0) return null;
   const seq=[],cols=[];
   for(let s=found;s>=0;s=prev[s]){seq.push((s/K1)|0);cols.push(prev[s]>=0?pc[s]:-1);}
-  seq.reverse();cols.reverse();            // cols[i] = colour of edge arriving at seq[i]
+  seq.reverse();cols.reverse();
   const pts=seq.map(v=>[V[v].x,V[v].y]);
   const cum=new Float64Array(pts.length);
   for(let i=1;i<pts.length;i++)cum[i]=cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
@@ -787,19 +816,15 @@ function computeRoute(g,src,dst){
   for(const p of pts){minX=Math.min(minX,p[0]);maxX=Math.max(maxX,p[0]);minY=Math.min(minY,p[1]);maxY=Math.max(maxY,p[1]);}
   return {pts,cum,total:cum[cum.length-1],legs,events,hops,transfers,minutes:Math.max(1,Math.round(hops*2+transfers*4)),bbox:[minX,minY,maxX,maxY],src,dst};
 }
-/*GRAPH_END*/
 
-/* ================= State ================= */
 let pdf=null,cur=1,items=[],pageInfo={},graphs={},graphP={},extracted=null;
 let s=1,tx=0,ty=0,fitS=1,stageW=0,stageH=0,renderToken=0,camTok=0;
 const J={open:false,A:null,B:null,pick:null,graph:null,route:null,busy:false,ride:null,sel:{A:-1,B:-1}};
 
-/* ---------- storage for the replaced map ---------- */
 const idb=()=>new Promise((res,rej)=>{const r=indexedDB.open('mapviewer',1);r.onupgradeneeded=()=>r.result.createObjectStore('f');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});
 async function idbGet(){try{const d=await idb();return await new Promise((res,rej)=>{const q=d.transaction('f').objectStore('f').get('map');q.onsuccess=()=>res(q.result||null);q.onerror=()=>rej(q.error);});}catch{return null;}}
 async function idbSet(buf){const d=await idb();return new Promise((res,rej)=>{const t=d.transaction('f','readwrite');t.objectStore('f').put(buf,'map');t.oncomplete=res;t.onerror=()=>rej(t.error);});}
 
-/* ================= Load & render ================= */
 async function loadMap(){
   show('loader',true);show('empty',false);
   try{
@@ -833,7 +858,7 @@ async function renderPage(n){
   $('prev').disabled=n<=1;$('next').disabled=n>=pdf.numPages;
   fitView();afterPage();
 }
-/* side layout = desktop/tablet, or a phone held in landscape */
+
 const isSide=()=>innerWidth>=900||(innerWidth>innerHeight&&innerHeight<=520);
 function safe(){
   if(!J.open)return{l:12,t:12,r:12,b:12};
@@ -876,7 +901,6 @@ function zoomAt(f,cx,cy){
   tx=cx-(cx-tx)*(ns/s);ty=cy-(cy-ty)*(ns/s);s=ns;apply();
 }
 
-/* ---------- pan / zoom / tap ---------- */
 const ptrs=new Map();let lastD=0,down=null;
 view.addEventListener('pointerdown',e=>{
   view.setPointerCapture(e.pointerId);camTok++;if(J.ride)J.ride.follow=false;
@@ -917,7 +941,6 @@ addEventListener('resize',()=>{
 });
 addEventListener('orientationchange',()=>setTimeout(()=>{if(stageW&&!J.route)fitView();},350));
 
-/* ================= Text extraction ================= */
 function extractText(){
   extracted=(async()=>{
     const raw=[];
@@ -940,7 +963,6 @@ function extractText(){
   return extracted;
 }
 
-/* ================= Search (line / stop) ================= */
 let busy=false;
 async function geminiJSON(prompt){
   const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+G_MODEL+':generateContent',{
@@ -1020,13 +1042,11 @@ $('q').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();doS
 $('q').addEventListener('focus',()=>{if($('results').children.length)$('results').classList.add('show');});
 document.addEventListener('pointerdown',e=>{if(!$('search').contains(e.target))$('results').classList.remove('show');});
 
-/* ================= Reveal highlight (Fluent) ================= */
 document.addEventListener('pointermove',e=>{
   const t=e.target.closest&&e.target.closest('.reveal');if(!t)return;
   const r=t.getBoundingClientRect();t.style.setProperty('--mx',(e.clientX-r.left)+'px');t.style.setProperty('--my',(e.clientY-r.top)+'px');
 },{passive:true});
 
-/* ================= Journey ================= */
 const inA=$('inA'),inB=$('inB'),pbody=$('pbody'),goBtn=$('goRoute');
 const IN={A:inA,B:inB};
 function show(id,on){$(id).classList.toggle('show',on);}
@@ -1088,11 +1108,16 @@ function afterGraph(g){
 }
 function afterPage(){
   J.A=null;J.B=null;J.sel={A:-1,B:-1};J.route=null;J.graph=null;
-  inA.value='';inB.value='';
+  inA.value='';inB.value='';syncClr();
   if(J.open){ensureGraph().catch(()=>{});}
 }
 
-/* ---------- fields, suggestions, picking ---------- */
+function hl(name,q){
+  const nn=norm(name),i=q?nn.indexOf(q):-1;
+  if(i<0||nn.length!==name.length)return esc(name);
+  return esc(name.slice(0,i))+'<mark>'+esc(name.slice(i,i+q.length))+'</mark>'+esc(name.slice(i+q.length));
+}
+function syncClr(){for(const w of ['A','B'])$('f'+w).classList.toggle('has',!!IN[w].value);}
 function hideSugg(){$('sA').classList.remove('show');$('sB').classList.remove('show');}
 let sugIdx={A:-1,B:-1};
 function suggest(w){
@@ -1102,16 +1127,16 @@ function suggest(w){
   let list=g.stops.map(x=>({x,n:norm(x.name)}));
   if(q)list=list.filter(o=>o.n.includes(q)).sort((a,b)=>(b.n.startsWith(q)-a.n.startsWith(q))||a.n.length-b.n.length);
   else list=list.sort((a,b)=>a.n<b.n?-1:1);
-  list=list.slice(0,6);sugIdx[w]=-1;
+  list=list.slice(0,8);sugIdx[w]=-1;
   if(!list.length){box.classList.remove('show');return;}
-  box.innerHTML=list.map(o=>'<div class="sg reveal" data-i="'+o.x.idx+'"><span>'+esc(o.x.name)+'</span><em>'+
+  box.innerHTML=list.map(o=>'<div class="sg reveal" data-i="'+o.x.idx+'"><span>'+hl(o.x.name,q)+'</span><em>'+
     o.x.colors.slice(0,4).map(c=>'<u style="background:'+g.colors[c-1].hex+'"></u>').join('')+'</em></div>').join('');
   box.classList.add('show');
 }
 for(const w of ['A','B']){
   const inp=IN[w],box=$('s'+w);
   inp.addEventListener('focus',()=>{ensureGraph().then(()=>{if(document.activeElement===inp)suggest(w);}).catch(()=>{});});
-  inp.addEventListener('input',()=>{J['sel'][w]=-1;J[w]=null;suggest(w);});
+  inp.addEventListener('input',()=>{J['sel'][w]=-1;J[w]=null;suggest(w);syncClr();});
   inp.addEventListener('blur',()=>setTimeout(()=>box.classList.remove('show'),160));
   inp.addEventListener('keydown',e=>{
     const rows=[...box.querySelectorAll('.sg')];
@@ -1127,10 +1152,11 @@ for(const w of ['A','B']){
     }else if(e.key==='Escape'){box.classList.remove('show');}
   });
   box.addEventListener('pointerdown',e=>{const r=e.target.closest('.sg');if(!r)return;e.preventDefault();setStop(w,+r.dataset.i);});
+  $('f'+w).querySelector('.clr').addEventListener('click',()=>{inp.value='';J['sel'][w]=-1;J[w]=null;syncClr();inp.focus();suggest(w);});
 }
 function setStop(w,idx,fromMap){
   const g=J.graph;if(!g||g.error)return;
-  J[w]=idx;J.sel[w]=idx;IN[w].value=g.stops[idx].name;$('s'+w).classList.remove('show');
+  J[w]=idx;J.sel[w]=idx;IN[w].value=g.stops[idx].name;syncClr();$('s'+w).classList.remove('show');
   setPick(null);
   const st=g.stops[idx];
   if(!fromMap&&!J.route){
@@ -1149,7 +1175,7 @@ function setPick(w){
 document.querySelectorAll('.pick').forEach(b=>b.addEventListener('click',()=>{const w=b.dataset.w;ensureGraph().catch(()=>{});setPick(J.pick===w?null:w);hideSugg();}));
 $('swap').onclick=()=>{
   const b=$('swap');b.classList.remove('spin1');void b.offsetWidth;b.classList.add('spin1');
-  [J.A,J.B]=[J.B,J.A];[J.sel.A,J.sel.B]=[J.sel.B,J.sel.A];[inA.value,inB.value]=[inB.value,inA.value];
+  [J.A,J.B]=[J.B,J.A];[J.sel.A,J.sel.B]=[J.sel.B,J.sel.A];[inA.value,inB.value]=[inB.value,inA.value];syncClr();
   if(J.A!=null&&J.B!=null)findRoute();
 };
 function onTap(cx,cy){
@@ -1162,7 +1188,6 @@ function onTap(cx,cy){
   setStop(w,best,true);
 }
 
-/* ---------- resolve typed text (local, then AI) ---------- */
 async function resolveField(w){
   if(J[w]!=null)return true;
   const g=J.graph,q=norm(IN[w].value).trim();if(!q||!g||g.error)return false;
@@ -1205,7 +1230,6 @@ async function findRoute(){
 }
 goBtn.onclick=findRoute;
 
-/* ---------- route rendering ---------- */
 const NS='http://www.w3.org/2000/svg';
 let drawTok=0;
 function clearRoute(keepBody){
@@ -1256,7 +1280,6 @@ async function showRoute(r,g){
     for(const el of L.el)el.setAttribute('d',d);}};
   setDrawn(0);
 
-  /* UI first so the panel feels instant */
   renderResult(r,g);
   toast('Route found',r.hops+(r.hops>1?' stops':' stop')+' · '+r.transfers+(r.transfers===1?' transfer':' transfers'));
 
@@ -1271,7 +1294,6 @@ async function showRoute(r,g){
   if(tok!==drawTok)return;
   setDrawn(r.total+1);await fly;if(tok!==drawTok)return;
 
-  /* markers, staggered along the route */
   r.events.forEach((ev,i)=>{
     const st=g.stops[ev.stop],first=i===0,last=i===r.events.length-1;
     const isTr=!first&&!last&&r.legs.some(L=>L.stops.length&&L.stops[0].stop===ev.stop&&L!==r.legs[0]);
@@ -1289,13 +1311,13 @@ async function showRoute(r,g){
     }
   });
   await sleep(250);
-  /* wave of pings */
+
   r.events.forEach((ev,i)=>setTimeout(()=>{if(tok===drawTok){const L=r.legs.find(l=>ev.i>=l.a&&ev.i<=l.b)||r.legs[0];addPing(g.stops[ev.stop].x,g.stops[ev.stop].y,L.color);}},i*Math.min(110,1400/r.events.length)));
 }
 
 function renderResult(r,g){
   const nm=i=>esc(g.stops[i].name);
-  let n=0,h='<div class="stats"><div class="stat reveal"><b data-n="'+r.minutes+'">0</b><small>min · est.</small></div>'+
+  let n=0,h='<div class="rsum"><b>'+nm(r.events[0].stop)+'</b><i>→</i><b>'+nm(r.events[r.events.length-1].stop)+'</b></div><div class="stats"><div class="stat reveal"><b data-n="'+r.minutes+'">0</b><small>min · est.</small></div>'+
     '<div class="stat reveal"><b data-n="'+r.hops+'">0</b><small>stops</small></div>'+
     '<div class="stat reveal"><b data-n="'+r.transfers+'">0</b><small>transfers</small></div></div>'+
     '<button class="ride fx" id="rideBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></svg><span>Play ride</span></button><div class="tl">';
@@ -1334,14 +1356,12 @@ function renderResult(r,g){
   $('rideBtn').onclick=()=>toggleRide();
 }
 
-/* ---------- toast ---------- */
 let toastT=0;
 function toast(a,b){
   $('tt').textContent=a;$('ts').textContent=b;const t=$('toast');t.classList.remove('show');void t.offsetWidth;t.classList.add('show');
   clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3800);
 }
 
-/* ---------- ride animation ---------- */
 function setRideBtn(on,label){const b=$('rideBtn');if(!b)return;b.classList.toggle('on',on);b.querySelector('span').textContent=label;}
 function toggleRide(){
   const r=J.route;if(!r)return;
@@ -1369,7 +1389,7 @@ function rideFrame(now){
   const R=J.ride,r=J.route,g=J.graph;if(!R||!r)return;
   if(!R.run)return;
   const p=Math.min(1,(now-R.t0)/R.dur);
-  const eased=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;                                   // ease in-out
+  const eased=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
   R.d=r.total*(0.6*p+0.4*eased);
   const pt=sample(r,R.d);
   R.veh.style.left=pt.x+'px';R.veh.style.top=pt.y+'px';
@@ -1381,7 +1401,7 @@ function rideFrame(now){
     const ns=s+(R.rs-s)*0.08,gx=sf.l+aw/2-pt.x*ns,gy=sf.t+ah/2-pt.y*ns;
     s=ns;tx+=(gx-tx)*0.12;ty+=(gy-ty)*0.12;apply();
   }
-  /* passed stops */
+
   let k=-1;for(let i=0;i<r.events.length;i++){if(r.events[i].dist<=R.d+0.5)k=i;}
   if(k!==R.ev){
     R.ev=k;
@@ -1400,7 +1420,6 @@ function rideFrame(now){
   requestAnimationFrame(rideFrame);
 }
 
-/* ================= Hidden editor ================= */
 const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
 const unhex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
 async function check(pw){
@@ -1458,7 +1477,6 @@ addEventListener('keydown',e=>{
   if(e.key==='Escape'&&J.open&&!$('modal').classList.contains('show')&&document.activeElement!==inA&&document.activeElement!==inB){if(J.pick)setPick(null);else closeJourney();}
 });
 
-/* ================= Tutorial (first visit, stored locally) ================= */
 const TK='tm_tuto_v1';
 const REDUCED=matchMedia('(prefers-reduced-motion:reduce)').matches;
 const tutoSeen=()=>{try{return localStorage.getItem(TK)==='1';}catch{return false;}};
@@ -1487,7 +1505,6 @@ const HERO='<svg class="hero" viewBox="0 0 320 110" aria-hidden="true">'+
   '<circle class="hm" r="4.5" fill="#fff"><animateMotion dur="4.4s" begin="2s" repeatCount="indefinite"><mpath href="#hp3"/></animateMotion></circle>'+
   '</svg>';
 
-/* ---- helpers ---- */
 let ti=-1,tTok=0,STEPS=[],dyn=null,pk='',gx=0,gy=0;
 const alive=t=>t===tTok&&ti>=0;
 const wait=(ms,t)=>new Promise(r=>setTimeout(()=>r(alive(t)),REDUCED?Math.min(ms,40):ms));
@@ -1549,7 +1566,6 @@ async function typeText(el,txt,t){
   el.textContent=txt;el.classList.remove('typing');
 }
 
-/* ---- the scripted demos (they drive the real app) ---- */
 async function sMove(t){
   const W=view.clientWidth,H=view.clientHeight,cx=W*.56,cy=H*.5;
   if(!await ghTo([cx,cy],t,800))return;
@@ -1671,7 +1687,6 @@ const ALL=[
   {k:'check',t:"You're all set",d:'Tap the ? button any time to replay this tour. Enjoy the ride!',sel:'#helpBtn',hero:true,run:sDone}
 ];
 
-/* ---- card + spotlight ---- */
 function paintSeg(){
   const sg=$('tseg'),c=$('tcnt');if(!sg)return;
   sg.innerHTML=STEPS.map((_,k)=>'<i class="'+(k<ti?'done':k===ti?'now':'')+'"></i>').join('');
@@ -1778,6 +1793,5 @@ addEventListener('keydown',e=>{
 loadMap();
 })();
 </script>
-
-
-</body></html>
+</body>
+</html>
