@@ -1,90 +1,366 @@
-<!DOCTYPE html> 
-<head> 
-<meta charset="UTF-8"> 
-<title>TCIU - We Run EMC's Largest Organized Nether Iceway</title> 
-<meta name="viewport" content="width=device-width, initial-scale=1"> 
-<link rel="icon" type="image/x-icon" href="favicon.ico"> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06080d">
+<meta name="description" content="The Trans-Continental Iceway Union runs EarthMC's largest organized Nether iceway.">
+<title>TCIU - We Run EMC's Largest Organized Nether Iceway</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  .btn-map {
-    display: inline-block;
-    background-color: #2b7a78;
-    color: #fff;
-    padding: 10px 20px;
-    text-decoration: none;
-    font-weight: bold;
-    border-radius: 5px;
-    margin: 10px 0;
-    transition: background-color 0.3s;
-  }
-  .btn-map:hover {
-    background-color: #3aafa9;
-  }
+:root{
+  --bg:#06080d;--panel:rgba(255,255,255,.04);--line:rgba(255,255,255,.09);
+  --text:#f0f4fa;--muted:#8b97ab;--accent:#19a7ff;--xg:linear-gradient(135deg,#17b83b,#a4f20f);--ps:linear-gradient(135deg,#0a62f0,#19c1ff);
+  --ease:cubic-bezier(.2,.9,.25,1);--spring:cubic-bezier(.34,1.56,.64,1)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,"Segoe UI Variable","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;line-height:1.65;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom,0px)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 500px at 50% -10%,rgba(25,167,255,.16),transparent 70%)}
+a{color:var(--accent);text-decoration:none}
+h1,h2,h3{font-family:"Space Grotesk",Inter,system-ui,sans-serif;letter-spacing:-.015em;line-height:1.15;margin:0}
+.wrap{width:min(960px,100% - 32px);margin:0 auto}
+
+.fx{outline:none;transition:transform .35s var(--spring),box-shadow .35s,background .25s,border-color .25s,opacity .25s}
+.fx:hover{transform:scale(1.03)}
+.fx:active{transform:scale(.97)}
+.fx:focus-visible{transform:scale(1.05);box-shadow:0 0 0 2px #fff,0 0 0 6px rgba(255,255,255,.14),0 0 32px rgba(25,167,255,.55)}
+.rev{position:relative}
+.rev::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;opacity:0;transition:opacity .25s;
+  background:radial-gradient(130px circle at var(--mx,-999px) var(--my,-999px),rgba(255,255,255,.7),transparent 65%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.rev:hover::before{opacity:1}
+
+nav{position:sticky;top:0;z-index:10;padding-top:env(safe-area-inset-top,0px);background:rgba(6,8,13,.72);-webkit-backdrop-filter:blur(22px) saturate(1.5);backdrop-filter:blur(22px) saturate(1.5);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;font-size:17px;color:var(--text);border-radius:10px;padding:4px 6px}
+.brand img{width:30px;height:30px;border-radius:8px;object-fit:cover}
+.navl{display:flex;gap:4px;align-items:center}
+.navl a{padding:8px 13px;border-radius:12px;color:var(--muted);font-size:14px;font-weight:500}
+.navl a:hover{color:var(--text);background:rgba(255,255,255,.07)}
+.navl a.hot{color:#06210a;background:var(--xg);font-weight:700}
+
+.hero{padding:76px 0 44px;text-align:center}
+.logo{width:92px;height:92px;border-radius:24px;object-fit:cover;box-shadow:0 0 0 1px var(--line),0 18px 60px rgba(25,167,255,.35)}
+.hero h1{margin-top:26px;font-size:clamp(32px,6vw,58px);font-weight:700;overflow-wrap:anywhere}
+.hero p{margin:14px auto 0;max-width:560px;color:var(--muted);font-size:clamp(16px,2.2vw,19px)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:32px}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:14px;font-weight:700;font-size:15px;color:var(--text);background:var(--panel);border:1px solid var(--line);cursor:pointer;font-family:inherit}
+.btn:hover{background:rgba(255,255,255,.09)}
+.btn.main{color:#06210a;border:0;background:var(--xg);box-shadow:0 10px 30px rgba(80,200,40,.35)}
+.btn.main:hover{background:var(--xg)}
+.btn.main::after{content:"";position:absolute;top:0;bottom:0;width:60%;left:-80%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:sheen 3.2s ease-in-out infinite}
+@keyframes sheen{0%,60%{left:-80%}100%{left:140%}}
+.btn.ps{color:#fff;border:0;background:var(--ps);box-shadow:0 10px 30px rgba(10,98,240,.4)}
+.btn.ps:hover{background:var(--ps)}
+
+section{padding:34px 0}
+.sh{margin-bottom:18px}
+.sh h2{font-size:clamp(22px,3.4vw,30px)}
+.sh span{display:block;color:var(--muted);font-size:14px;margin-top:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}
+.bulletin{display:grid;gap:10px}
+.bulletin .item{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;border-radius:16px;background:rgba(25,167,255,.07);border:1px solid rgba(25,167,255,.22)}
+.bulletin .ic{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--ps);font-weight:800;font-size:14px}
+.bulletin p{margin:0;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stat{text-align:center;padding:18px 8px}
+.stat b{display:block;font-family:"Space Grotesk",Inter,sans-serif;font-size:clamp(26px,4vw,36px);line-height:1.1;background:var(--ps);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat small{color:var(--muted);font-size:12.5px}
+.about p{margin:0 0 14px;color:#c4cedd;overflow-wrap:anywhere}
+.about p:last-child{margin:0}
+.goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.goal .n{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--xg);color:#06210a;font-weight:800;margin-bottom:12px}
+.goal h3{font-size:20px;margin-bottom:8px}
+.goal p{margin:0;color:var(--muted);font-size:14.5px;overflow-wrap:anywhere}
+.lead{color:var(--muted);margin:0 0 16px}
+.rights{display:grid;gap:10px;counter-reset:r}
+.right{display:flex;gap:16px;padding:18px 20px;counter-increment:r}
+.right::after{content:counter(r);order:-1;flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--accent);border:1px solid rgba(25,167,255,.5)}
+.right div{min-width:0;overflow-wrap:anywhere}
+.right p{margin:4px 0 0;color:#b6c1d3;font-size:14.5px}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.lk{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-radius:16px;background:var(--panel);border:1px solid var(--line);color:var(--text);font-weight:600}
+.lk:hover{background:rgba(25,167,255,.08);border-color:rgba(25,167,255,.5)}
+.lk small{display:block;color:var(--muted);font-weight:400;font-size:12.5px}
+.lk span{min-width:0;overflow-wrap:anywhere}
+.lk em{font-style:normal;color:var(--accent);flex:none}
+.hq{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.hq h3{font-size:19px}
+.hq p{margin:8px 0 0;color:#c4cedd;overflow-wrap:anywhere}
+footer{padding:32px 0 56px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin-top:20px}
+
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.intro{opacity:0;transform:translateY(18px) scale(.96);filter:blur(8px)}
+body.ready .intro{animation:enter .9s var(--spring) both;animation-delay:calc(var(--i,0)*90ms)}
+@keyframes enter{to{opacity:1;transform:none;filter:none}}
+
+.help{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 16px);z-index:20;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(14,17,24,.8);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--text);font-size:18px;font-weight:700;cursor:pointer;font-family:inherit}
+
+.tuto{position:fixed;inset:0;z-index:50;display:none}
+.tuto.on{display:block}
+.tspot{position:fixed;border-radius:18px;pointer-events:none;box-shadow:0 0 0 9999px rgba(3,5,9,.72),0 0 0 2px rgba(255,255,255,.9),0 0 34px rgba(25,167,255,.6);transition:left .55s var(--spring),top .55s var(--spring),width .55s var(--spring),height .55s var(--spring),opacity .3s}
+.tspot.none{left:50%;top:50%;width:0;height:0;box-shadow:0 0 0 9999px rgba(3,5,9,.72)}
+.tcard{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 24px);width:min(420px,100% - 24px);transform:translateX(-50%);padding:22px 22px 18px;border-radius:22px;background:rgba(14,17,24,.94);border:1px solid rgba(255,255,255,.14);box-shadow:0 24px 70px rgba(0,0,0,.65);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px)}
+.tcard.pop{animation:pop .5s var(--spring)}
+@keyframes pop{from{opacity:0;transform:translateX(-50%) translateY(16px) scale(.96)}}
+.dots{display:flex;gap:6px;margin-bottom:14px}
+.dots i{height:5px;width:14px;border-radius:3px;background:rgba(255,255,255,.18);transition:width .4s var(--spring),background .3s}
+.dots i.on{width:30px;background:var(--xg)}
+.tcard h3{font-size:21px;margin-bottom:6px}
+.tcard p{margin:0;color:#c4cedd;font-size:14.5px}
+.trow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:18px}
+.tb{padding:10px 18px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font-weight:600;font-size:14px;cursor:pointer;font-family:inherit}
+.tb.p{border:0;background:var(--xg);color:#06210a;font-weight:800}
+.tb.q{border:0;background:none;color:var(--muted)}
+
+@media (max-width:640px){
+  .navl a:not(.hot){display:none}
+  .hero{padding-top:48px}
+  .card{padding:18px}
+  .tcard{bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
+}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.rv,.intro{opacity:1;transform:none;filter:none}}
 </style>
-</head> 
-<body> 
-<img src="TCIULogo.png" alt="TCIU Logo" width="65" height="65"> 
-<h1>Trans-Continental Iceway Union</h1> 
-<h3>We Run EMC's Largest Organized Nether Iceway</h3> 
-<hr> 
-<h2>Bulletin</h2> 
-<ul> 
-  <li><i>The TCIU is hiring builders and pavers! Go to <a href="https://tciu.info/join">https://tciu.info/join</a> to learn more!</i></li> 
-  <li>Join our Discord server for the newest updates!</li> 
-</ul> 
+</head>
+<body>
+<nav>
+  <div class="wrap">
+    <a class="brand fx" href="./"><img src="TCIULogo.png" alt="TCIU Logo" width="30" height="30" onerror="this.style.display='none'">TCIU</a>
+    <div class="navl">
+      <a class="fx" href="#about">About</a>
+      <a class="fx" href="#rights">Bill of Rights</a>
+      <a class="fx" href="#links">Links</a>
+      <a class="fx hot" id="navMap" href="map.html">Map</a>
+    </div>
+  </div>
+</nav>
 
-<!-- Bouton Map ajouté ici -->
-<a href="./map" class="btn-map">🗺️ Accéder à la Carte (Map)</a>
-<br><br>
+<header class="hero wrap">
+  <img class="logo intro" style="--i:0" src="TCIULogo.png" alt="TCIU Logo" width="92" height="92" onerror="this.style.display='none'">
+  <h1 class="intro" style="--i:1">Trans-Continental Iceway Union</h1>
+  <p class="intro" style="--i:2">We Run EMC's Largest Organized Nether Iceway</p>
+  <div class="cta intro" style="--i:3" id="cta">
+    <a class="btn main fx rev" href="map.html">Open the Map</a>
+    <a class="btn ps fx rev" href="https://tciu.info/discord">Join the Discord</a>
+    <a class="btn fx rev" href="https://tciu.info/join">We're hiring</a>
+  </div>
+</header>
 
-<h2>Links</h2> 
-<b><a href="https://tciu.info/discord">Discord</a></b> <br> 
-<b><a href="https://tciu.info/map">Trans-Continental Iceway Map</a></b> <a href="https://tciu.info/map/Trans-Continental%20Iceway%20Map.pdf">(View raw file)</a> <br> 
-<a href="https://tciu.info">Non-TCI Map (Nether) (under construction)</a> <br> 
-<a href="https://xilef2211.github.io/ice-highways-map/">EarthMC Overworld Iceways (Courtesy of XiLeF2211)</a> <br> 
-<a href="https://tciu.info">Link to EMC wikipage (under construction)</a> <br> 
-<a href="https://tciu.info">Donate (under construction) (gold?)</a> <br> 
-<br> 
-<hr> 
-<p> We are the Trans-Continental Iceway Union, an organization for the Minecraft server EarthMC. For more information, please join our Discord server below. For the Trans-Continental Iceway (TCI) map, look above. Yes, the website has loaded correctly. It's pretty, isn't it? </p> 
-<p> The TCIU is responsible for paving and maintaining the Trans-Continental Iceway, Terra Nostra's first and largest organized Nether iceway system. All of our iceways can be found at y=125 in the Nether in the locations of major cities. You can find the map for our system above. Please look at the key located on the map, which identifies the status and information for each stop and intersection. It is also our mission to map non-Trans-Continental Iceways in the Nether and Overworld for ease-of-access use by all the players of EarthMC. </p> The TCIU has four goals: 
-<ol> 
-  <li> <b>Pave</b> 
-    <ul> 
-      <li>The TCIU paves iceways throughout the Nether with the objective of connecting the nations of EarthMC.</li> 
-    </ul> 
-  </li> 
-  <li> <b>Map</b> 
-    <ul> 
-      <li>The Trans-Continental Iceway was created to give the server a reliable, mapped out system of iceways for fast travel between nations without having to struggle with teleportation. Our map shows travelers every single stop, intersection, transfer, and line our system has to offer.<br>However, it is <b>also</b> the goal of the TCIU to explore and map out every non-TCI iceway and railroad in the Nether <i>and</i> the Overworld. This is done to fulfill our purpose of making non-teleportation travel on the server easier for every player.</li> 
-    </ul> 
-  </li> 
-  <li> <b>Farm</b> 
-    <ul> 
-      <li>Here's a ground breaking statement: the TCIU, as an ice highway association, has to have a lot of ice. In particular, blue ice, which is the fastest type for boats to travel on. Therefore, the TCIU is also a major dealer and buyer in blue ice. We farm ice in the Arctic and use automatic ice farms to sell ice to players, organizations, and civilizations, as well as to pave and maintain our iceways in the Nether. The TCIU will do business with players, towns, and nations involving packed or blue ice in exchange for gold. We tend to make good deals for new customers, and better deals for returning customers. For more information, please join our Discord server. If you can build efficient automatic ice farm(s) for the TCIU, please make a ticket in our Discord server, we will pay you handsomely per farm built!</li> 
-    </ul> 
-  </li> 
-  <li> <b>Maintain</b> 
-    <ul> 
-      <li>As most of the TCI highways have already been paved, the current mission of the TCIU is to maintain these already-paved iceways. All TCI lines are constantly being renovated and repaired, and some stations are being transformed through beautification projects.</li> 
-    </ul> 
-  </li> 
-</ol> 
-<p> The Trans-Continental Iceway itself is a complex system of 324 stops, 244 towns, 79 transfers, 37 intersections, 23 lines, 15 merged line sections, two headquarters, and a non-biased mindset that benefits all the nations of Terra Nostra. In sum, the Trans-Continental Iceway spans 160,456 blocks. Lines 1-16 run vertically across the map, from north to south. Lines A-F run horizontally across the map, from west to east. A reminder that one block in the Nether is equal to eight Overworld blocks. Again, the full map that correlates the TCI to its Overworld locations can be found above. </p> 
-<h3>Below is the TCIU's Bill of Rights. All members of the TCIU are instructed to always follow the below bylaws. </h3> 
-<ol> 
-  <li><b> I will not grief intentionally.</b> Unintentional griefs are common when constructing iceways, so assume the best before you assume the worst. However, if you believe a TCIU member was responsible for a grief that relates to a TCI iceway, contact EarthMC staff. <br></li> <br> 
-  <li><b> I will be kind.</b> The actions of our members directly reflect onto how EarthMC players view the TCIU as an organization. We are by no means telling our members to be pacifists, but treating any other player as complete garbage for no good reason will never be tolerated. Members only have to abide by this bylaw while representing the TCIU in some way, or while chatting in the TCIU Discord server. To report server rule-breaking activity, contact EarthMC staff. <br></li> <br> 
-  <li><b> I will not build a casino stop.</b> The TCIU will make our stance on this very clear: We will not, and will never, build a stop to a town whose <b>sole purpose</b> is running a casino. <i> What about Las Vegas? </i> The TCI still serves towns <i>with</i> casinos, as there are still players with homes who reside in said towns. If the only major goal of your town is to run a casino, the TCIU will not be working with your settlement. <br></li> <br> <li><b> I will be logical.</b> By logical, we mean not doing anything that will cause unnecessary conflict. It can also be phrased as: Don't do what you're doing if you know what you're doing is stupid. If you believe something you are doing may cause an unneeded problem, there are three ways to prevent it: think outside of the box, ask someone who does know a solution, or <b>don't do it at all.</b> <br></li> <br> 
-  <li><b> I will care. </b> Our members should always care for others, themselves, and the job given to them. Members should not feel like they have to, (which leads to job neglect), but rather want to complete their tasks. They should be aware of other people's behavior, as well as monitoring their own health, and taking action when they think is necessary. This is just a reminder to think about your personal self. Get off of Minecraft, take a break, go touch grass, or even <a href="https://www.tiktok.com/@edmondx/video/7280647597671320875" title="Average EarthMC player">take a shower.</a><br></li> <br> 
-  <li><b> I will not build a stop to the following towns:</b> <a href="https://docs.google.com/document/d/1qKuQir-lBdez0Z60LgvrOm9QhXascBOzx_Zt8dLTcZk">Rejected TCI towns can be found here.</a> List will be continuously updated. <br></li> 
-</ol> 
-<p> Our main headquarters can be found in Sub-Saharan Africa on TCI Line E at the Overworld coordinates (6940, 3682). Our second headquarters, currently being planned for the Arctic, will most likely be a branch location, and is not available. </p> 
-<p> If you have any questions, comments, or concerns, join our Discord server, seen at the top. If you are the leader/councilor of a settlement or nation and have an inquiry, DM ron20233 on Discord or <i>/mail send RobloxModeration</i> on EarthMC. </p> 
-</body> 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-F1R244ESZX"></script> 
-<script> 
-window.dataLayer = window.dataLayer || []; 
-function gtag(){dataLayer.push(arguments);} 
-gtag('js', new Date()); 
-gtag('config', 'G-F1R244ESZX'); 
-</script> </html>
+<main class="wrap">
+  <section class="rv">
+    <div class="sh"><h2>Bulletin</h2></div>
+    <div class="bulletin">
+      <div class="item"><div class="ic">★</div><p><i>The TCIU is hiring builders and pavers! Go to <a href="https://tciu.info/join">https://tciu.info/join</a> to learn more!</i></p></div>
+      <div class="item"><div class="ic">#</div><p>Join our Discord server for the newest updates!</p></div>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sh"><h2>The system</h2><span>Trans-Continental Iceway</span></div>
+    <div class="stats">
+      <div class="card stat rev"><b>324</b><small>stops</small></div>
+      <div class="card stat rev"><b>244</b><small>towns</small></div>
+      <div class="card stat rev"><b>79</b><small>transfers</small></div>
+      <div class="card stat rev"><b>37</b><small>intersections</small></div>
+      <div class="card stat rev"><b>23</b><small>lines</small></div>
+      <div class="card stat rev"><b>15</b><small>merged line sections</small></div>
+      <div class="card stat rev"><b>160,456</b><small>blocks</small></div>
+    </div>
+  </section>
+
+  <section id="about" class="rv">
+    <div class="sh"><h2>About</h2></div>
+    <div class="card about">
+      <p>We are the Trans-Continental Iceway Union, an organization for the Minecraft server EarthMC. For more information, please join our Discord server below. For the Trans-Continental Iceway (TCI) map, look above. Yes, the website has loaded correctly. It's pretty, isn't it?</p>
+      <p>The TCIU is responsible for paving and maintaining the Trans-Continental Iceway, Terra Nostra's first and largest organized Nether iceway system. All of our iceways can be found at y=125 in the Nether in the locations of major cities. You can find the map for our system above. Please look at the key located on the map, which identifies the status and information for each stop and intersection. It is also our mission to map non-Trans-Continental Iceways in the Nether and Overworld for ease-of-access use by all the players of EarthMC.</p>
+      <p>The Trans-Continental Iceway itself is a complex system of 324 stops, 244 towns, 79 transfers, 37 intersections, 23 lines, 15 merged line sections, two headquarters, and a non-biased mindset that benefits all the nations of Terra Nostra. In sum, the Trans-Continental Iceway spans 160,456 blocks. Lines 1-16 run vertically across the map, from north to south. Lines A-F run horizontally across the map, from west to east. A reminder that one block in the Nether is equal to eight Overworld blocks. Again, the full map that correlates the TCI to its Overworld locations can be found above.</p>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sh"><h2>Our four goals</h2></div>
+    <div class="goals">
+      <div class="card goal rev"><div class="n">1</div><h3>Pave</h3><p>The TCIU paves iceways throughout the Nether with the objective of connecting the nations of EarthMC.</p></div>
+      <div class="card goal rev"><div class="n">2</div><h3>Map</h3><p>The Trans-Continental Iceway was created to give the server a reliable, mapped out system of iceways for fast travel between nations without having to struggle with teleportation. Our map shows travelers every single stop, intersection, transfer, and line our system has to offer.<br><br>However, it is <b>also</b> the goal of the TCIU to explore and map out every non-TCI iceway and railroad in the Nether <i>and</i> the Overworld. This is done to fulfill our purpose of making non-teleportation travel on the server easier for every player.</p></div>
+      <div class="card goal rev"><div class="n">3</div><h3>Farm</h3><p>Here's a ground breaking statement: the TCIU, as an ice highway association, has to have a lot of ice. In particular, blue ice, which is the fastest type for boats to travel on. Therefore, the TCIU is also a major dealer and buyer in blue ice. We farm ice in the Arctic and use automatic ice farms to sell ice to players, organizations, and civilizations, as well as to pave and maintain our iceways in the Nether. The TCIU will do business with players, towns, and nations involving packed or blue ice in exchange for gold. We tend to make good deals for new customers, and better deals for returning customers. For more information, please join our Discord server. If you can build efficient automatic ice farm(s) for the TCIU, please make a ticket in our Discord server, we will pay you handsomely per farm built!</p></div>
+      <div class="card goal rev"><div class="n">4</div><h3>Maintain</h3><p>As most of the TCI highways have already been paved, the current mission of the TCIU is to maintain these already-paved iceways. All TCI lines are constantly being renovated and repaired, and some stations are being transformed through beautification projects.</p></div>
+    </div>
+  </section>
+
+  <section id="rights" class="rv">
+    <div class="sh"><h2>Bill of Rights</h2></div>
+    <p class="lead">Below is the TCIU's Bill of Rights. All members of the TCIU are instructed to always follow the below bylaws.</p>
+    <div class="rights">
+      <div class="card right rev"><div><b>I will not grief intentionally.</b><p>Unintentional griefs are common when constructing iceways, so assume the best before you assume the worst. However, if you believe a TCIU member was responsible for a grief that relates to a TCI iceway, contact EarthMC staff.</p></div></div>
+      <div class="card right rev"><div><b>I will be kind.</b><p>The actions of our members directly reflect onto how EarthMC players view the TCIU as an organization. We are by no means telling our members to be pacifists, but treating any other player as complete garbage for no good reason will never be tolerated. Members only have to abide by this bylaw while representing the TCIU in some way, or while chatting in the TCIU Discord server. To report server rule-breaking activity, contact EarthMC staff.</p></div></div>
+      <div class="card right rev"><div><b>I will not build a casino stop.</b><p>The TCIU will make our stance on this very clear: We will not, and will never, build a stop to a town whose <b>sole purpose</b> is running a casino. <i>What about Las Vegas?</i> The TCI still serves towns <i>with</i> casinos, as there are still players with homes who reside in said towns. If the only major goal of your town is to run a casino, the TCIU will not be working with your settlement.</p></div></div>
+      <div class="card right rev"><div><b>I will be logical.</b><p>By logical, we mean not doing anything that will cause unnecessary conflict. It can also be phrased as: Don't do what you're doing if you know what you're doing is stupid. If you believe something you are doing may cause an unneeded problem, there are three ways to prevent it: think outside of the box, ask someone who does know a solution, or <b>don't do it at all.</b></p></div></div>
+      <div class="card right rev"><div><b>I will care.</b><p>Our members should always care for others, themselves, and the job given to them. Members should not feel like they have to, (which leads to job neglect), but rather want to complete their tasks. They should be aware of other people's behavior, as well as monitoring their own health, and taking action when they think is necessary. This is just a reminder to think about your personal self. Get off of Minecraft, take a break, go touch grass, or even <a href="https://www.tiktok.com/@edmondx/video/7280647597671320875" title="Average EarthMC player">take a shower.</a></p></div></div>
+      <div class="card right rev"><div><b>I will not build a stop to the following towns:</b><p><a href="https://docs.google.com/document/d/1qKuQir-lBdez0Z60LgvrOm9QhXascBOzx_Zt8dLTcZk">Rejected TCI towns can be found here.</a> List will be continuously updated.</p></div></div>
+    </div>
+  </section>
+
+  <section id="links" class="rv">
+    <div class="sh"><h2>Links</h2></div>
+    <div class="links">
+      <a class="lk fx rev" href="https://tciu.info/discord"><span>Discord<small>Join the community</small></span><em>→</em></a>
+      <a class="lk fx rev" href="map.html"><span>Trans-Continental Iceway Map<small>Interactive map and route planner</small></span><em>→</em></a>
+      <a class="lk fx rev" href="https://tciu.info"><span>Non-TCI Map (Nether)<small>Under construction</small></span><em>→</em></a>
+      <a class="lk fx rev" href="https://xilef2211.github.io/ice-highways-map/"><span>EarthMC Overworld Iceways<small>Courtesy of XiLeF2211</small></span><em>→</em></a>
+      <a class="lk fx rev" href="https://tciu.info"><span>Link to EMC wikipage<small>Under construction</small></span><em>→</em></a>
+      <a class="lk fx rev" href="https://tciu.info"><span>Donate<small>Under construction (gold?)</small></span><em>→</em></a>
+    </div>
+  </section>
+
+  <section class="rv">
+    <div class="sh"><h2>Headquarters &amp; contact</h2></div>
+    <div class="hq">
+      <div class="card"><h3>Main headquarters</h3><p>Our main headquarters can be found in Sub-Saharan Africa on TCI Line E at the Overworld coordinates (6940, 3682). Our second headquarters, currently being planned for the Arctic, will most likely be a branch location, and is not available.</p></div>
+      <div class="card"><h3>Questions?</h3><p>If you have any questions, comments, or concerns, join our Discord server, seen at the top. If you are the leader/councilor of a settlement or nation and have an inquiry, DM ron20233 on Discord or <i>/mail send RobloxModeration</i> on EarthMC.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">Trans-Continental Iceway Union · EarthMC</div></footer>
+
+<button class="help fx" id="help" aria-label="Show the tutorial" title="Tutorial">?</button>
+
+<div class="tuto" id="tuto" aria-live="polite">
+  <div class="tspot none" id="tspot"></div>
+  <div class="tcard" id="tcard" role="dialog" aria-label="Tutorial"></div>
+</div>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-F1R244ESZX"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-F1R244ESZX');
+</script>
+<script>
+(function(){
+  var KEY='tciu_tutorial_done_v1';
+  function seen(){try{return localStorage.getItem(KEY)==='1';}catch(e){return false;}}
+  function mark(){try{localStorage.setItem(KEY,'1');}catch(e){}}
+  var $=function(id){return document.getElementById(id);};
+  var tuto=$('tuto'),spot=$('tspot'),card=$('tcard'),idx=0,open=false;
+  var steps=[
+    {t:'Welcome aboard',d:'This is the home of the Trans-Continental Iceway Union. Here is a 20 second tour.',s:null},
+    {t:'The interactive map',d:'Open the full iceway map to search any line or stop and plan a journey between two towns.',s:'#navMap'},
+    {t:'Join the community',d:'Jump into our Discord for the latest news, or apply to become a builder or paver.',s:'#cta'},
+    {t:'Move like on a console',d:'Press Tab, then use the arrow keys to jump between buttons and cards. Enter opens the highlighted one.',s:null},
+    {t:'Need this again?',d:'Tap the question mark at any time to replay this tour.',s:'#help'}
+  ];
+  function place(){
+    var st=steps[idx],el=st.s?document.querySelector(st.s):null;
+    if(!el){spot.className='tspot none';return;}
+    var r=el.getBoundingClientRect(),p=8;
+    spot.className='tspot';
+    spot.style.left=(r.left-p)+'px';spot.style.top=(r.top-p)+'px';
+    spot.style.width=(r.width+p*2)+'px';spot.style.height=(r.height+p*2)+'px';
+  }
+  function render(){
+    var st=steps[idx],last=idx===steps.length-1,h='<div class="dots">';
+    for(var i=0;i<steps.length;i++)h+='<i'+(i===idx?' class="on"':'')+'></i>';
+    h+='</div><h3>'+st.t+'</h3><p>'+st.d+'</p><div class="trow"><button class="tb q fx" id="tq">Skip</button><div style="display:flex;gap:8px">'+
+      (idx>0?'<button class="tb fx" id="tp">Back</button>':'')+'<button class="tb p fx" id="tn">'+(last?'Done':'Next')+'</button></div></div>';
+    card.innerHTML=h;card.classList.remove('pop');void card.offsetWidth;card.classList.add('pop');
+    $('tq').onclick=close;$('tn').onclick=next;if($('tp'))$('tp').onclick=prev;
+    var el=st.s?document.querySelector(st.s):null;
+    if(el)el.scrollIntoView({block:'center',behavior:'smooth'});
+    place();setTimeout(place,350);setTimeout(place,700);
+    $('tn').focus({preventScroll:true});
+  }
+  function next(){if(idx>=steps.length-1){close();return;}idx++;render();}
+  function prev(){if(idx>0){idx--;render();}}
+  function start(){idx=0;open=true;tuto.classList.add('on');render();}
+  function close(){open=false;tuto.classList.remove('on');mark();window.scrollTo({top:0,behavior:'smooth'});var h=$('help');if(h)h.focus({preventScroll:true});}
+  $('help').addEventListener('click',start);
+  addEventListener('resize',function(){if(open)place();});
+  addEventListener('scroll',function(){if(open)place();},{passive:true});
+  addEventListener('keydown',function(e){
+    if(!open)return;
+    if(e.key==='Escape'){close();}
+    else if(e.key==='ArrowRight'){e.preventDefault();next();}
+    else if(e.key==='ArrowLeft'){e.preventDefault();prev();}
+  });
+
+  var els=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target);}});},{threshold:.08});
+    els.forEach(function(e){io.observe(e);});
+  }else{els.forEach(function(e){e.classList.add('in');});}
+
+  document.addEventListener('pointermove',function(e){
+    var t=e.target.closest&&e.target.closest('.rev');if(!t)return;
+    var r=t.getBoundingClientRect();t.style.setProperty('--mx',(e.clientX-r.left)+'px');t.style.setProperty('--my',(e.clientY-r.top)+'px');
+  });
+
+  var FOC='a[href],button';
+  addEventListener('keydown',function(e){
+    if(open)return;
+    var d={ArrowRight:[1,0],ArrowLeft:[-1,0],ArrowDown:[0,1],ArrowUp:[0,-1]}[e.key];
+    if(!d)return;
+    var cur=document.activeElement;
+    if(!cur||cur===document.body||!cur.matches(FOC))return;
+    var cr=cur.getBoundingClientRect(),cx=cr.left+cr.width/2,cy=cr.top+cr.height/2,best=null,bs=1e9;
+    document.querySelectorAll(FOC).forEach(function(n){
+      if(n===cur||n.offsetParent===null)return;
+      var r=n.getBoundingClientRect(),x=r.left+r.width/2-cx,y=r.top+r.height/2-cy,main=d[0]?x*d[0]:y*d[1],side=d[0]?Math.abs(y):Math.abs(x);
+      if(main<=4)return;
+      var sc=main+side*2.2;
+      if(sc<bs){bs=sc;best=n;}
+    });
+    if(best){e.preventDefault();best.focus({preventScroll:true});best.scrollIntoView({block:'center',behavior:'smooth'});}
+  });
+
+  function boot(){
+    document.body.classList.add('ready');
+    if(!seen())setTimeout(start,1400);
+  }
+  if(document.readyState==='complete')boot();else addEventListener('load',boot);
+})();
+</script>
+<script>
+(function(){
+  var touch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+  var blocked=false;
+  function stop(e){e.preventDefault();e.stopPropagation();return false;}
+  addEventListener('contextmenu',stop,true);
+  addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase(),c=e.ctrlKey||e.metaKey;
+    if(e.key==='F12'||e.keyCode===123)return stop(e);
+    if(c&&e.shiftKey&&'ijckm'.indexOf(k)>-1)return stop(e);
+    if(c&&(k==='u'||k==='s'||k==='p'))return stop(e);
+    if(e.metaKey&&e.altKey&&'iujc'.indexOf(k)>-1)return stop(e);
+  },true);
+  function lock(){
+    if(blocked)return;blocked=true;
+    try{document.documentElement.innerHTML='<body style="margin:0;display:flex;align-items:center;justify-content:center;height:100vh;background:#090b0f;color:#8d97a9;font:16px system-ui,sans-serif;text-align:center">Developer tools detected.<br>Close them to continue.</body>';}catch(_){}
+  }
+  function open(){
+    var w=outerWidth-innerWidth>160,h=outerHeight-innerHeight>160;
+    return w||h;
+  }
+  if(!touch){
+    setInterval(function(){
+      if(open()){lock();return;}
+      var t=performance.now();
+      (function(){debugger;})();
+      if(performance.now()-t>100)lock();
+    },1000);
+    var el=new Image();
+    Object.defineProperty(el,'id',{get:function(){lock();}});
+    setInterval(function(){console.log(el);console.clear();},2000);
+  }
+  addEventListener('resize',function(){if(blocked&&!open())location.reload();});
+})();
+</script>
+</body>
+</html>
