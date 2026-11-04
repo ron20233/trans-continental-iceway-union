@@ -260,8 +260,8 @@ body.journey .pager{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 14px)}
 .modal.show{display:grid}
 .card{width:min(360px,100%);border-radius:20px;padding:22px;animation:rise .4s var(--ease) both}
 .card h3{margin:0 0 14px;font-size:17px}
-.card input[type=password]{width:100%;height:46px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font:inherit;font-size:16px;padding:0 14px;outline:0}
-.card input[type=password]:focus{border-color:var(--accent)}
+.card input[type=password],.card input[type=email]{width:100%;height:46px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font:inherit;font-size:16px;padding:0 14px;outline:0}
+.card input[type=password]:focus,.card input[type=email]:focus{border-color:var(--accent)}
 .card .err{color:#ff7b7b;font-size:13px;min-height:18px;margin-top:8px}
 .row2{display:flex;gap:8px;margin-top:10px}
 .row2 button{flex:1;height:44px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);font-size:15px;font-weight:600;cursor:pointer}
@@ -506,6 +506,9 @@ const G_MODEL = 'gemini-2.5-flash';
 const SALT = 'b5509e47c370bc0c82fedc319cfe342a';
 const HASH = 'f54888b1f6e14aad167ed091d36a46b5a5bd83b4f240143e5d2fc8448ec99526';
 const ITER = 250000;
+const FB_DB  = 'https://tciu-map-default-rtdb.firebaseio.com';
+const FB_KEY = 'AIzaSyAI-9_ia0uVW20LbZGciRrtA2QAnly4G1I';
+const FB_PATH = 'maps/current';
 
 const $ = id => document.getElementById(id);
 const view = $('view'), stage = $('stage'), panel = $('panel');
@@ -746,11 +749,17 @@ function analyze(ol, base, W, H, texts){
     c.name=best||('Line '+(i+1));
   });
 
-  const adj=Array.from({length:V.length},()=>[]);
+  const EL=[];
   for(const e of E){
     if(e.dead)continue;const c=qIdx.get(e.c);if(!c)continue;
-    adj[e.a].push({to:e.b,c,w:e.l});adj[e.b].push({to:e.a,c,w:e.l});
+    EL.push([e.a,e.b,c,e.l]);
   }
+  return finishGraph(V.map(v=>({x:v.x,y:v.y,stop:v.stop})),stops,colors,K,EL,msz,W,H);
+}
+
+function finishGraph(V,stops,colors,K,EL,msz,W,H){
+  const adj=Array.from({length:V.length},()=>[]);
+  for(const e of EL){adj[e[0]].push({to:e[1],c:e[2],w:e[3]});adj[e[1]].push({to:e[0],c:e[2],w:e[3]});}
   for(const s of stops){
     for(let i=0;i<s.v.length;i++)for(let j=i+1;j<s.v.length;j++){
       const a=s.v[i],b=s.v[j],d=Math.hypot(V[a].x-V[b].x,V[a].y-V[b].y);
@@ -761,7 +770,43 @@ function analyze(ol, base, W, H, texts){
     const A=stops[i],B=stops[j],d=Math.hypot(A.x-B.x,A.y-B.y);
     if(d<=msz*1.8){const a=A.v[0],b=B.v[0];adj[a].push({to:b,c:K+1,w:d*3});adj[b].push({to:a,c:K+1,w:d*3});}
   }
-  return {V,stops,colors,K,adj,msz,PEN:msz*10,W,H};
+  return {V,stops,colors,K,adj,msz,PEN:msz*10,W,H,EL};
+}
+
+const rnd=n=>Math.round(n*10)/10;
+function packGraph(g){
+  return {W:g.W,H:g.H,K:g.K,msz:rnd(g.msz),colors:g.colors,
+    V:g.V.map(v=>[rnd(v.x),rnd(v.y),v.stop]),
+    S:g.stops.map(t=>[rnd(t.x),rnd(t.y),rnd(t.size),t.name,t.v,t.colors||[]]),
+    E:g.EL.map(e=>[e[0],e[1],e[2],rnd(e[3])])};
+}
+function unpackGraph(p){
+  const V=p.V.map(a=>({x:a[0],y:a[1],stop:a[2]}));
+  const stops=p.S.map((a,i)=>({idx:i,x:a[0],y:a[1],size:a[2],name:a[3],v:a[4],colors:a[5]||[]}));
+  return finishGraph(V,stops,p.colors,p.K,p.E,p.msz,p.W,p.H);
+}
+async function zipStr(str){
+  if(typeof CompressionStream==='undefined')return 'p:'+str;
+  const bytes=new Uint8Array(await new Response(new Blob([str]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer());
+  let bin='';for(let i=0;i<bytes.length;i+=32768)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+32768));
+  return 'g:'+btoa(bin);
+}
+async function unzipStr(t){
+  if(t.startsWith('p:'))return t.slice(2);
+  const bin=atob(t.slice(2)),bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  return await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+}
+
+async function fbGet(path){
+  const ac=new AbortController(),t=setTimeout(()=>ac.abort(),6000);
+  try{const r=await fetch(FB_DB+'/'+path+'.json',{signal:ac.signal});if(!r.ok)return null;return await r.json();}
+  catch{return null;}
+  finally{clearTimeout(t);}
+}
+async function fbPut(path,val,token){
+  const r=await fetch(FB_DB+'/'+path+'.json?auth='+encodeURIComponent(token),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(val)});
+  if(!r.ok)throw new Error('db '+r.status);
 }
 
 function computeRoute(g,src,dst){
@@ -818,6 +863,7 @@ function computeRoute(g,src,dst){
 }
 
 let pdf=null,cur=1,items=[],pageInfo={},graphs={},graphP={},extracted=null;
+let curHash='',remoteMeta=null,remoteP=Promise.resolve(null),FORCE=false,AUTH=null,pubBusy=false;
 let s=1,tx=0,ty=0,fitS=1,stageW=0,stageH=0,renderToken=0,camTok=0;
 const J={open:false,A:null,B:null,pick:null,graph:null,route:null,busy:false,ride:null,sel:{A:-1,B:-1}};
 
@@ -833,9 +879,13 @@ async function loadMap(){
     await openPdf(data);
   }catch(e){show('empty',true);}
   show('loader',false);
-  if(pdf)setTimeout(maybeTuto,500);
+  if(pdf){setTimeout(maybeTuto,500);autoSync();}
 }
+async function sha256(buf){return hex(await crypto.subtle.digest('SHA-256',buf));}
 async function openPdf(data){
+  try{curHash=await sha256(data);}catch{curHash='';}
+  remoteMeta=null;
+  remoteP=curHash?fbGet(FB_PATH+'/meta').then(m=>{remoteMeta=m;return m;}):Promise.resolve(null);
   pdf=await pdfjsLib.getDocument({data:new Uint8Array(data.slice(0))}).promise;
   items=[];pageInfo={};graphs={};graphP={};cur=1;
   $('pager').classList.toggle('show',pdf.numPages>1);
@@ -1080,19 +1130,34 @@ $('routeBtn').onclick=openJourney;
 $('pclose').onclick=closeJourney;
 $('grab').onclick=()=>panel.classList.toggle('min');
 
+async function analyzePage(n){
+  await extracted;await sleep(120);
+  const page=await pdf.getPage(n),ol=await page.getOperatorList(),vp=pageInfo[n].vp;
+  const texts=items.filter(i=>i.page===n).map(i=>{
+    const a=vp.convertToViewportPoint(i.x0,i.y0),b=vp.convertToViewportPoint(i.x0+i.w,i.y0+i.h);
+    return{str:i.str,minX:Math.min(a[0],b[0]),maxX:Math.max(a[0],b[0]),minY:Math.min(a[1],b[1]),maxY:Math.max(a[1],b[1])};
+  });
+  return analyze(ol,vp.transform,stageW,stageH,texts);
+}
+async function fromCloud(n){
+  try{
+    if(FORCE)return null;
+    await remoteP;
+    const m=remoteMeta;if(!m||!curHash||m.hash!==curHash)return null;
+    const t=await fbGet(FB_PATH+'/pages/p'+n);if(typeof t!=='string')return null;
+    const p=JSON.parse(await unzipStr(t));
+    if(p.W!==stageW||p.H!==stageH)return null;
+    return unpackGraph(p);
+  }catch{return null;}
+}
 async function ensureGraph(){
   const n=cur;
   if(graphs[n]){J.graph=graphs[n];afterGraph(graphs[n]);return graphs[n];}
   if(!graphP[n]){
     setBody('loader','Analyzing the map…');
     graphP[n]=(async()=>{
-      await extracted;await sleep(120);
-      const page=await pdf.getPage(n),ol=await page.getOperatorList(),vp=pageInfo[n].vp;
-      const texts=items.filter(i=>i.page===n).map(i=>{
-        const a=vp.convertToViewportPoint(i.x0,i.y0),b=vp.convertToViewportPoint(i.x0+i.w,i.y0+i.h);
-        return{str:i.str,minX:Math.min(a[0],b[0]),maxX:Math.max(a[0],b[0]),minY:Math.min(a[1],b[1]),maxY:Math.max(a[1],b[1])};
-      });
-      const g=analyze(ol,vp.transform,stageW,stageH,texts);graphs[n]=g;return g;
+      const g=(await fromCloud(n))||(await analyzePage(n));
+      graphs[n]=g;return g;
     })();
   }
   const g=await graphP[n];
@@ -1421,6 +1486,106 @@ function rideFrame(now){
 }
 
 const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const loadAuth=()=>{if(AUTH)return AUTH;try{AUTH=JSON.parse(sessionStorage.getItem('_fb')||'null');}catch{AUTH=null;}return AUTH;};
+function saveAuth(t,r,e){AUTH={t,r,e};try{sessionStorage.setItem('_fb',JSON.stringify(AUTH));}catch{}}
+async function fbLogin(email,pw){
+  const r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+FB_KEY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw,returnSecureToken:true})});
+  const j=await r.json();if(!r.ok)throw new Error((j.error&&j.error.message)||'login');
+  saveAuth(j.idToken,j.refreshToken,Date.now()+(+j.expiresIn)*1000);
+}
+async function fbToken(){
+  const a=loadAuth();if(!a)return null;
+  if(a.e>Date.now()+60000)return a.t;
+  try{
+    const r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB_KEY,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(a.r)});
+    const j=await r.json();if(!r.ok)throw 0;
+    saveAuth(j.id_token,j.refresh_token,Date.now()+(+j.expires_in)*1000);return AUTH.t;
+  }catch{AUTH=null;try{sessionStorage.removeItem('_fb');}catch{}return null;}
+}
+async function publishScan(say){
+  if(pubBusy)return null;pubBusy=true;say=say||(()=>{});
+  const startPage=cur;
+  try{
+    const tk=await fbToken();if(!tk)throw new Error('auth');
+    await remoteP;
+    FORCE=true;
+    const pages={},names=[];let stopsN=0,linesN=0;
+    for(let n=1;n<=pdf.numPages;n++){
+      say('Scanning page '+n+' / '+pdf.numPages+'…');
+      if(n!==cur)await renderPage(n);
+      delete graphs[n];delete graphP[n];
+      const g=await ensureGraph();
+      if(!g||g.error)continue;
+      const z=await zipStr(JSON.stringify(packGraph(g)));
+      if(z.length>9e6)throw new Error('size');
+      pages['p'+n]=z;
+      for(const st of g.stops)names.push(st.name);
+      stopsN+=g.stops.length;linesN+=g.colors.length;
+    }
+    FORCE=false;
+    if(!Object.keys(pages).length)throw new Error('empty');
+    const old=remoteMeta&&remoteMeta.names?JSON.parse(remoteMeta.names):[];
+    const oldSet=new Set(old),newSet=new Set(names);
+    const added=names.filter(x=>!oldSet.has(x)),removed=old.filter(x=>!newSet.has(x));
+    const version=((remoteMeta&&remoteMeta.version)||0)+1;
+    say('Publishing…');
+    await fbPut(FB_PATH+'/pages',pages,tk);
+    const meta={hash:curHash,version,updatedAt:Date.now(),pages:pdf.numPages,stops:stopsN,lines:linesN,names:JSON.stringify(names)};
+    await fbPut(FB_PATH+'/meta',meta,tk);
+    remoteMeta=meta;
+    try{await fbPut('maps/history/v'+version,{hash:curHash,updatedAt:meta.updatedAt,stops:stopsN,lines:linesN,addedN:added.length,removedN:removed.length,added:added.slice(0,40),removed:removed.slice(0,40)},tk);}catch{}
+    return{version,added,removed,stopsN,linesN};
+  }finally{
+    FORCE=false;pubBusy=false;
+    if(pdf&&startPage!==cur){try{await renderPage(startPage);}catch{}}
+  }
+}
+function autoSync(){
+  remoteP.then(()=>{
+    if(!pdf||!curHash||!loadAuth())return;
+    if(remoteMeta&&remoteMeta.hash===curHash)return;
+    publishScan().then(r=>{if(r)toast('Map re-scanned','v'+r.version+' · +'+r.added.length+' / −'+r.removed.length+' stops');}).catch(()=>{});
+  });
+}
+function authMsg(e){
+  const m=String(e&&e.message||'');
+  if(/INVALID_LOGIN|INVALID_PASSWORD|EMAIL_NOT_FOUND|INVALID_EMAIL/.test(m))return 'Incorrect email or password.';
+  if(/OPERATION_NOT_ALLOWED/.test(m))return 'Enable Email/Password sign-in in Firebase Authentication.';
+  if(/TOO_MANY/.test(m))return 'Too many attempts. Try again later.';
+  if(/^auth$/.test(m))return 'Session expired. Sign in again.';
+  if(/db (401|403)/.test(m))return 'Write refused. Check the database rules and the admin account.';
+  if(/size/.test(m))return 'The scan is too large to publish.';
+  if(/empty/.test(m))return 'Nothing to publish: no route data found in this map.';
+  return 'Publishing failed.';
+}
+async function runPublish(close){
+  const card=$('mcard');
+  card.innerHTML='<h3>Publishing the scan</h3><div class="err" id="perr" style="color:var(--muted)">Starting…</div><div class="row2"><button id="pc">Close</button></div>';
+  $('pc').onclick=close;
+  const say=m=>{const e=$('perr');if(e){e.style.color='var(--muted)';e.textContent=m;}};
+  try{
+    const r=await publishScan(say);
+    if(!r){say('A scan is already running.');return;}
+    close();toast('Map published','v'+r.version+' · +'+r.added.length+' / −'+r.removed.length+' stops');
+  }catch(e){
+    console.error(e);const el=$('perr');if(el){el.style.color='#ff7b7b';el.textContent=authMsg(e);}
+  }
+}
+function loginForm(close){
+  const card=$('mcard');
+  card.innerHTML='<h3>Publish to the cloud</h3><input type="email" id="fe" placeholder="Admin email" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Admin email"><div style="height:8px"></div><input type="password" id="fp" placeholder="Password" autocomplete="off" aria-label="Firebase password"><div class="err" id="perr"></div><div class="row2"><button id="pc">Cancel</button><button class="p" id="po">Sign in</button></div>';
+  $('pc').onclick=close;$('fe').focus();
+  const go=async()=>{
+    const em=$('fe').value.trim(),pw=$('fp').value;$('fp').value='';
+    if(!em||!pw){$('perr').textContent='Enter your email and password.';return;}
+    $('po').disabled=true;
+    try{await fbLogin(em,pw);}catch(e){$('perr').textContent=authMsg(e);$('po').disabled=false;return;}
+    runPublish(close);
+  };
+  $('po').onclick=go;
+  $('fp').addEventListener('keydown',e=>{if(e.key==='Enter')go();if(e.key==='Escape')close();});
+}
+
 const unhex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
 async function check(pw){
   const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
@@ -1450,8 +1615,9 @@ function openEditor(){
 }
 function chooser(close){
   const card=$('mcard');
-  card.innerHTML='<h3>Replace the map</h3><div class="err" id="perr" style="color:var(--muted);margin:0 0 6px">Select a PDF file.</div><div class="row2"><button id="pc">Cancel</button><button class="p" id="pf">Choose PDF</button></div>';
+  card.innerHTML='<h3>Map administration</h3><div class="err" id="perr" style="color:var(--muted);margin:0 0 6px">Replace the map in this browser, or publish its scan to the cloud.</div><div class="row2"><button id="pc">Cancel</button><button id="pp">Publish scan</button><button class="p" id="pf">Choose PDF</button></div>';
   $('pc').onclick=close;
+  $('pp').onclick=()=>{if(loadAuth())runPublish(close);else loginForm(close);};
   $('pf').onclick=()=>{
     const inp=document.createElement('input');inp.type='file';inp.accept='application/pdf,.pdf';
     inp.onchange=async()=>{
@@ -1465,7 +1631,7 @@ function chooser(close){
       try{await idbSet(buf);}catch(e){console.error(e);err('Could not save the map in this browser.');return;}
       try{
         close();show('loader',true);closeJourney();await openPdf(buf);
-        show('empty',false);$('results').classList.remove('show');$('q').value='';
+        show('empty',false);$('results').classList.remove('show');$('q').value='';autoSync();
       }catch(e){console.error(e);show('empty',true);}
       show('loader',false);
     };
