@@ -338,8 +338,8 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.25)}
       <path style="--c:#ffc933;--i:3;stroke:#ffc933" d="M180 12 V55 H250 V100"/>
       <circle style="--i:0" cx="80" cy="40" r="6"/><circle style="--i:1" cx="130" cy="70" r="6"/><circle style="--i:2" cx="190" cy="60" r="6"/><circle style="--i:3" cx="250" cy="55" r="6"/>
     </svg>
-    <h2>Transit Map</h2>
-    <p data-i18n="tag">Nether iceway network</p>
+    <h2>Trans-Continental Iceway Map</h2>
+    <p data-i18n="tag">tciu.info/map</p>
     <div class="sp-load"><i></i></div>
   </div>
 </div>
@@ -373,7 +373,7 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.25)}
   <header class="ph">
     <div class="brand">
       <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h6V8h6v8h6"/></svg></div>
-      <div><h1 class="ttl">Transit Map</h1><small data-i18n="tag"></small></div>
+      <div><h1 class="ttl">Trans-Continental Iceway Map</h1><small data-i18n="tag"></small></div>
       <span class="grow"></span>
       <button class="ib" id="fold" data-i18n-title="fold" aria-label="Fold"></button>
     </div>
@@ -1284,7 +1284,7 @@ const ICO = {
 /* ---------- i18n ---------- */
 const I = {
   fr: {
-    tag: "Réseau d'iceways du Nether", note: 'Toutes les iceways à y=125 dans le Nether', search_ph: 'Rechercher une ligne, un arrêt ou « x z »',
+    tag: "https://tciu.info/map", note: 'Toutes les iceways à y=125 dans le Nether', search_ph: 'Rechercher une ligne, un arrêt ou « x z »',
     tab_route: 'Trajet', tab_lines: 'Lignes', tab_favs: 'Favoris', tab_set: 'Réglages',
     from: 'Départ', to: 'Arrivée', find: "Trouver l'itinéraire", fast: 'Le plus rapide', fewer: 'Moins de correspondances', random: 'Trajet surprise',
     recent: 'Récents', sum_time: 'Durée', sum_tr: 'Corresp.', sum_bl: 'Blocs', share: 'Partager', replay: 'Rejouer', save: 'Favori', clear: 'Effacer',
@@ -1315,7 +1315,7 @@ const I = {
     t10t: 'Raccourcis clavier', t10d: "<kbd>/</kbd> rechercher · <kbd>R</kbd> trajet · <kbd>L</kbd> lignes · <kbd>F</kbd> favoris · <kbd>K</kbd> légende · <kbd>T</kbd> thème · <kbd>?</kbd> visite · <kbd>Échap</kbd> fermer."
   },
   en: {
-    tag: 'Nether iceway network', note: 'All iceways at y=125 in Nether', search_ph: 'Search a line, a stop or “x z”',
+    tag: 'https://tciu.info/map', note: 'All iceways at y=125 in Nether', search_ph: 'Search a line, a stop or “x z”',
     tab_route: 'Route', tab_lines: 'Lines', tab_favs: 'Favorites', tab_set: 'Settings',
     from: 'From', to: 'To', find: 'Find route', fast: 'Fastest', fewer: 'Fewer transfers', random: 'Surprise route',
     recent: 'Recent', sum_time: 'Time', sum_tr: 'Transfers', sum_bl: 'Blocks', share: 'Share', replay: 'Replay', save: 'Favorite', clear: 'Clear',
@@ -1334,7 +1334,7 @@ const I = {
     tour_btn: 'Guided tour', t_next: 'Next', t_prev: 'Back', t_done: "Let's go!", t_skip: 'Skip',
     bn_set: "Couldn't read the squaremap settings. Check MAP.url, or set MAP.world and MAP.zoom by hand.",
     bn_tiles: 'No map tiles found at this spot. Drag the map, or set MAP.start to somewhere that has been rendered.',
-    t1t: 'Welcome to Transit Map', t1d: 'Explore the Nether iceway network: lines, stops, transfers and travel times. This tour takes under a minute.',
+    t1t: 'Welcome to the TCI Map', t1d: 'Explore the Nether iceway network: lines, stops, transfers and travel times. This tour takes under a minute.',
     t2t: 'Quick search', t2d: 'Type a stop, a line (“5”, “B”…) or “x z” coordinates to fly there. Shortcut: <kbd>/</kbd>.',
     t3t: 'Plan a journey', t3d: 'Pick a departure and an arrival: the fastest route is computed, drawn on the map, then travelled by a little animated train.',
     t4t: 'Route options', t4d: 'Switch between “Fastest” and “Fewer transfers”, try a surprise route, then share the link, replay the animation or save the route as a favorite.',
